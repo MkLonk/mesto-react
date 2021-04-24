@@ -3,6 +3,7 @@ import PopupWithForm from './PopupWithForm';
 import { myApi } from '../utils/Api'
 import loadAvatarPath from '../images/loadAvatar.gif';
 import Card from './Card';
+import ImagePopup from './ImagePopup';
 
 function Main(props) {
 
@@ -43,9 +44,8 @@ function Main(props) {
         })
         setCards(data)
       })
-      .catch(err => `Ошибка при загрузке данных о пользователе - ${err}`)
+      .catch(err => `Ошибка при загрузке карточек - ${err}`)
   }, []);
-
 
 
   return (
@@ -68,11 +68,17 @@ function Main(props) {
 
       <section className="gallery">
         <ul className="gallery__photo-grid">
-          {cards.map(card => <Card {...card} />)}
+          {cards.map(card => <Card
+            key={card.id}
+            name={card.name}
+            link={card.link}
+            likes={card.likes}
+            onCardClick={props.onCardClick}
+          />)}
         </ul>
       </section>
 
-      <PopupWithForm id="1" name="edit-avatar" title="Обновить аватар" isOpen={props.isEditAvatarPopupOpen} onClose={props.onClosePopups}
+      <PopupWithForm name="edit-avatar" title="Обновить аватар" isOpen={props.isEditAvatarPopupOpen} onClose={props.onClosePopups}
         children={
           <div className="form__inputs">
             <div className="form__input-element">
@@ -81,7 +87,8 @@ function Main(props) {
             </div>
           </div>
         } />
-      <PopupWithForm id="2" name="edit-profile" title="Редактировать профиль" isOpen={props.isEditProfilePopupOpen} onClose={props.onClosePopups}
+
+      <PopupWithForm name="edit-profile" title="Редактировать профиль" isOpen={props.isEditProfilePopupOpen} onClose={props.onClosePopups}
         children={
           <div className="form__inputs">
             <div className="form__input-element">
@@ -95,7 +102,8 @@ function Main(props) {
             </div>
           </div>
         } />
-      <PopupWithForm id="3" name="add-gallery" title="Новое место" isOpen={props.isAddPlacePopupOpen} onClose={props.onClosePopups}
+
+      <PopupWithForm name="add-gallery" title="Новое место" isOpen={props.isAddPlacePopupOpen} onClose={props.onClosePopups}
         children={
           <div className="form__inputs">
             <div className="form__input-element">
@@ -109,8 +117,10 @@ function Main(props) {
             </div>
           </div>
         } />
-      <PopupWithForm id="4" name="delete-card" title="Вы уверены?" isOpen={false} onClose={props.onClosePopups} />
 
+      <PopupWithForm name="delete-card" title="Вы уверены?" isOpen={false} onClose={props.onClosePopups} />
+
+      <ImagePopup card={props.card} isOpen={props.isSelectedCard} onClose={props.onClosePopups} />
 
     </main>
 
