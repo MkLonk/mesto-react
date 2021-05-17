@@ -90,10 +90,10 @@ class Api {
   }
 
   /* Запрос на постановку/снятие лайка с карточки */
-  likeCard(idCard, method){
+  changeLikeCardStatus(idCard, isLiked){
     const urlReq = `${this._url}/${this._team}/cards/likes/${idCard}`
 
-    return this._sendRequest(urlReq, method)
+    return this._sendRequest(urlReq, isLiked ? 'PUT' : 'DELETE')
   }
 
 }
