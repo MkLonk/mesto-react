@@ -1,10 +1,16 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
 import PopupWithForm from './PopupWithForm'
 
 function AddPlacePopup(props) {
 
   const nameRef = useRef(); // записываем объект, возвращаемый хуком, в переменную
   const linkRef = useRef();
+
+  useEffect(() => {
+    nameRef.current.value = '' // сбрасываем значение инпута
+    linkRef.current.value = ''
+  }, [props.isOpen]);
+
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -15,10 +21,8 @@ function AddPlacePopup(props) {
     }
 
     props.onAddPlace(newCard)
-
-    nameRef.current.value = '' // сбрасываем значение инпута
-    linkRef.current.value = ''
   }
+
 
   return (
     <PopupWithForm name="add-gallery" title="Новое место" isOpen={props.isOpen} onClose={props.onClose} onSubmit={handleSubmit}

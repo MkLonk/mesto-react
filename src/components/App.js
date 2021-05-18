@@ -10,6 +10,15 @@ import { CurrentUserContext, defaultUser } from '../contexts/CurrentUserContext'
 
 function App() {
 
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState({});
+  const [isSelectedCard, setIsSelectedCard] = useState(false);
+  const [cards, setCards] = useState([]);
+  const [currentUser, setCurrentUser] = useState(defaultUser);
+
+
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true)
   }
@@ -77,7 +86,8 @@ function App() {
     myApi.changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
         setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
-      });
+      })
+      .catch(err => console.log('Ошибка при добавлении/удалении лайка с карточки', err))
   }
 
   //удалить карточку
@@ -87,24 +97,15 @@ function App() {
         const result = cards.filter(c => c._id !== card._id);
         setCards(result);
         console.log(res.message)
-      });
+      })
+      .catch(err => console.log('Ошибка при удалении карточки', err))
   }
-  //
 
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
-
-  const [selectedCard, setSelectedCard] = useState({});
-  const [isSelectedCard, setIsSelectedCard] = useState(false);
-
-  const [cards, setCards] = useState([]);
-  const [currentUser, setCurrentUser] = useState(defaultUser); // создали стейт переменную
-
-  // API запрос картачек сохраненных на сервере
+  //API запрос данных пользователя и список карточек
   useEffect(() => {
-    myApi.loadCards()
-      .then(cardsData => {
+    Promise.all([myApi.loadUserData(), myApi.loadCards()])
+      .then(([userData, cardsData]) => {
+        setCurrentUser(userData)
 
         const data = cardsData.map(item => {
           return {
@@ -117,16 +118,10 @@ function App() {
         })
         setCards(data)
       })
-      .catch(err => `Ошибка при загрузке карточек - ${err}`)
-  }, []);
-
-  // API запрос на сервере панных о пользователе
-  useEffect(() => {
-    myApi.loadUserData()
-      .then(userData => {
-        setCurrentUser(userData)
-      })
-      .catch(err => `Ошибка при загрузке данных о пользователе - ${err}`)
+      .catch(([userErr, cardsErr]) => {
+        console.log('Ошибка при загрузке данных о пользователе', userErr)
+        console.log('Ошибка при загрузке карточек', cardsErr)
+      });
   }, []);
 
 
