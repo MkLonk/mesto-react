@@ -5,7 +5,7 @@ import Main from './Main';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
-import { myApi } from '../utils/Api'
+import { myApi } from '../utils/api'
 import { CurrentUserContext, defaultUser } from '../contexts/CurrentUserContext'
 
 function App() {
